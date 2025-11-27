@@ -7,8 +7,8 @@ use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\MentoringController as AdminMentoringController;
 use App\Http\Controllers\Admin\JobController as AdminJobController;
 use App\Http\Controllers\Admin\ForumCategoryController as AdminForumCategoryController;
-
-
+use App\Http\Controllers\Admin\HelpController;
+use App\Http\Controllers\HelpViewerController;
 use App\Http\Controllers\Student\DashboardController as StudentDashboardController;
 use App\Http\Controllers\Student\MentoringController as StudentMentoringController;
 use App\Http\Controllers\Student\ScheduleController as StudentScheduleController;
@@ -88,10 +88,21 @@ Route::middleware(['auth', 'role:admin'])
     Route::get('/forum-categories/{forumCategory}/edit', [AdminForumCategoryController::class, 'edit'])->name('forum-categories.edit');
     Route::put('/forum-categories/{forumCategory}', [AdminForumCategoryController::class, 'update'])->name('forum-categories.update');
     Route::delete('/forum-categories/{forumCategory}', [AdminForumCategoryController::class, 'destroy'])->name('forum-categories.destroy');
+Route::prefix('help')->name('help.')->group(function () {
+
+    Route::get('/', [HelpController::class, 'index'])->name('index');
 
 
+    Route::get('/create', [HelpController::class, 'createArticle'])->name('create');
+    Route::post('/store', [HelpController::class, 'storeArticle'])->name('store');
+    Route::get('/{article}/show', [HelpController::class, 'show'])->name('show');
+
+    Route::get('/article/{article}/edit', [HelpController::class, 'editArticle'])->name('edit');
+    Route::put('/article/{article}', [HelpController::class, 'updateArticle'])->name('update');
+    Route::delete('/article/{article}', [HelpController::class, 'deleteArticle'])->name('delete');
 });
 
+});
 
 
 
@@ -131,9 +142,17 @@ Route::middleware(['auth', 'role:student'])
         Route::post('/store', [StudentForumController::class, 'store'])->name('store');
         Route::get('/thread/{thread}', [StudentForumController::class, 'show'])->name('show');
         Route::post('/thread/{thread}/reply', [StudentForumController::class, 'reply'])->name('reply');
-    Route::post('/thread/{thread}/reply/{reply}/mark-solution', [\App\Http\Controllers\Student\ForumController::class, 'markSolution'])->name('mark-solution');
+        Route::put('/thread/{thread}/reply/{reply}/mark-solution', [\App\Http\Controllers\Student\ForumController::class, 'markSolution'])->name('mark-solution');
 
     });
+
+// Help Viewer (Student & Mentor & Admin)
+Route::prefix('help')->name('help.')->group(function () {
+    Route::get('/', [HelpViewerController::class, 'index'])->name('index');
+    Route::get('/category/{category}', [HelpViewerController::class, 'showCategory'])->name('category');
+    Route::get('/article/{article}', [HelpViewerController::class, 'show'])->name('show');
+    Route::get('/{tag}/tag', [HelpViewerController::class, 'showTag'])->name('tag');
+});
 });
 
 
@@ -172,5 +191,12 @@ Route::middleware(['auth', 'role:mentor'])
     Route::post('/thread/{thread}/reply', [\App\Http\Controllers\Mentor\ForumController::class, 'reply'])->name('reply');
     // Route::post('/thread/{thread}/reply/{reply}/mark-solution', [\App\Http\Controllers\Mentor\ForumController::class, 'markSolution'])->name('mark-solution');
     });
+// HELP VIEWER FOR ALL ROLES
+Route::prefix('help')->name('help.')->group(function () {
+    Route::get('/', [HelpViewerController::class, 'index'])->name('index');
+    Route::get('/category/{category}', [HelpViewerController::class, 'showCategory'])->name('category');
+    Route::get('/article/{article}', [HelpViewerController::class, 'show'])->name('show');
+    Route::get('/{tag}/tag', [HelpViewerController::class, 'showTag'])->name('tag');
 
+});
 });
