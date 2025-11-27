@@ -10,14 +10,27 @@ use Illuminate\Http\Request;
 class ForumController extends Controller
 {
     // LIST SEMUA THREAD UNTUK MENTOR
-    public function index()
-    {
-        $threads = ForumThread::with('user', 'category')
-            ->orderByDesc('created_at')
-            ->paginate(10);
+public function index(Request $request)
+{
+    $categories = \App\Models\ForumCategory::orderBy('name')->get();
 
-        return view('mentor.forum.index', compact('threads'));
-    }
+    $threads = ForumThread::with('user', 'category')
+        ->when($request->category, function ($q) use ($request) {
+            $q->where('category_id', $request->category);
+        })
+        ->when($request->status, function ($q) use ($request) {
+            $q->where('status', $request->status);
+        })
+        ->when($request->search, function ($q) use ($request) {
+            $q->where('title', 'LIKE', "%{$request->search}%");
+        })
+        ->orderByDesc('created_at')
+        ->paginate(10)
+        ->withQueryString();
+
+    return view('mentor.forum.index', compact('threads', 'categories'));
+}
+
 
     // DETAIL THREAD + SEMUA REPLIES
     public function show(ForumThread $thread)

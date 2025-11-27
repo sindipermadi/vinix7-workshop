@@ -23,12 +23,12 @@
         <p>{{ $r->body }}</p>
 
         {{-- Tombol tandai sebagai solusi (hanya kalau belum solusi) --}}
-        @if(! $r->is_solution)
+        {{-- @if(! $r->is_solution)
             <form method="POST" action="{{ route('mentor.forum.mark-solution', [$thread->id, $r->id]) }}">
                 @csrf
                 <button type="submit">Tandai sebagai Solusi</button>
             </form>
-        @endif
+        @endif --}}
     </div>
 @empty
     <p>Belum ada balasan.</p>

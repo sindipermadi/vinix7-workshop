@@ -131,6 +131,8 @@ Route::middleware(['auth', 'role:student'])
         Route::post('/store', [StudentForumController::class, 'store'])->name('store');
         Route::get('/thread/{thread}', [StudentForumController::class, 'show'])->name('show');
         Route::post('/thread/{thread}/reply', [StudentForumController::class, 'reply'])->name('reply');
+    Route::post('/thread/{thread}/reply/{reply}/mark-solution', [\App\Http\Controllers\Student\ForumController::class, 'markSolution'])->name('mark-solution');
+
     });
 });
 
@@ -168,7 +170,7 @@ Route::middleware(['auth', 'role:mentor'])
     Route::get('/', [\App\Http\Controllers\Mentor\ForumController::class, 'index'])->name('index');
     Route::get('/thread/{thread}', [\App\Http\Controllers\Mentor\ForumController::class, 'show'])->name('show');
     Route::post('/thread/{thread}/reply', [\App\Http\Controllers\Mentor\ForumController::class, 'reply'])->name('reply');
-    Route::post('/thread/{thread}/reply/{reply}/mark-solution', [\App\Http\Controllers\Mentor\ForumController::class, 'markSolution'])->name('mark-solution');
+    // Route::post('/thread/{thread}/reply/{reply}/mark-solution', [\App\Http\Controllers\Mentor\ForumController::class, 'markSolution'])->name('mark-solution');
     });
 
 });

@@ -15,6 +15,12 @@
             <span style="color: green; font-weight:bold;">[SOLUSI]</span>
         @endif
         <p>{{ $r->body }}</p>
+             @if(! $r->is_solution && $solution==0)
+            <form method="POST" action="{{ route('student.forum.mark-solution', [$thread->id, $r->id]) }}">
+                @csrf
+                <button type="submit">Tandai sebagai Solusi</button>
+            </form>
+        @endif
     </div>
 @empty
 
